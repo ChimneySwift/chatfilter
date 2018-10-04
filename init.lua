@@ -61,7 +61,7 @@ function chatfilter.strike(pos, texture, sound, skyflash, explode)
     if sound then
         minetest.sound_play(sound, {
             pos = pos,
-            max_hear_distance = 1000,
+            max_hear_distance = 5000,
         })
     end
 
@@ -122,12 +122,12 @@ chatfilter.img_cmd_pairs = {
     ice = {sound = "laser", skyflash = false},
     lightning = {sound = "lightning", skyflash = false},
 }
-
+minetest.register_priv("nuke", "LeTs YoU nUkE tHiNgZ") 
 -- Chatcommand
 minetest.register_chatcommand("laser", {
     params = "<playername> [intensity] [type]",
     description = "Zap playername with a laser of type lighting, ice or laser (default: lightning), with intensity 0 = just zap, 1 =  zap and hurt, 2 = zap and kill, 3 = zap, kill, clear inventory (default: 1)", -- Full description
-    privs = {ban=true},
+    privs = {nuke=true},
     func = function(name, params)
         local split = string.split(params, " ")
         local target_name, intensity, type = (split[1] or ""), (tonumber(split[2]) or 1), (split[3] or "lightning")
@@ -152,9 +152,9 @@ minetest.register_chatcommand("laser", {
     end,
 })
 
-minetest.register_chatcommand("restor", {
+minetest.register_chatcommand("nukerestore", {
     params = "<playername>",
-    description = "Restor the inventory of a player after they've been lasored", -- Full description
+    description = "Restore the inventory of a player after they've been lasored", -- Full description
     privs = {ban=true},
     func = function(name, param)
         target = minetest.get_player_by_name(param)
@@ -211,7 +211,7 @@ minetest.register_on_chat_message(function(name, message)
         if target then
             target:set_hp(0)
             chatfilter.strike(target:get_pos(), "lightning.png", "lightning", true, false)
-            minetest.chat_send_player(name, "Please do not swear in this server.")
+            minetest.chat_send_player(name, "Please do not swear in this server OR GET NUKED.")
             minetest.log("action", "[chatfilter] Message from "..name.." not sent for innapropriate content: "..message)
         end
         return true
@@ -231,7 +231,7 @@ minetest.after(1, function()
 
             if name then
                 -- kick the user
-                irc.send("KICK "..irc.config.channel.." "..name.." Please do not swear in this channel.")
+                irc.send("KICK "..irc.config.channel.." "..name.." Please do not swear in this channel. OR FEEL MY SHARP BOOT")
             end
         else
             minetest.chat_send_all(message)

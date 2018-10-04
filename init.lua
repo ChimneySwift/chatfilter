@@ -82,7 +82,7 @@ function chatfilter.strike(pos, texture, sound, skyflash, explode)
     end
 
     if explode then
-        tnt.boom(pos, {radius = 3, damage_radius = 6})
+        tnt.boom(pos, {radius = 3, damage_radius = 1})
     end
 end
 
@@ -122,7 +122,9 @@ chatfilter.img_cmd_pairs = {
     ice = {sound = "laser", skyflash = false},
     lightning = {sound = "lightning", skyflash = false},
 }
+-- Priv nuke
 minetest.register_priv("nuke", "LeTs YoU nUkE tHiNgZ") 
+
 -- Chatcommand
 minetest.register_chatcommand("laser", {
     params = "<playername> [intensity] [type]",
@@ -132,6 +134,7 @@ minetest.register_chatcommand("laser", {
         local split = string.split(params, " ")
         local target_name, intensity, type = (split[1] or ""), (tonumber(split[2]) or 1), (split[3] or "lightning")
         target = minetest.get_player_by_name(target_name)
+        
 
         if not target then
             return false, "Player does not exist"
@@ -147,7 +150,7 @@ minetest.register_chatcommand("laser", {
                 target:set_hp(0)
             end
 
-            chatfilter.strike(target:get_pos(), type..".png", chatfilter.img_cmd_pairs[type].sound, chatfilter.img_cmd_pairs[type].skyflash, false)
+            chatfilter.strike(target:get_pos(), type..".png", chatfilter.img_cmd_pairs[type].sound, chatfilter.img_cmd_pairs[type].skyflash, true)
         end
     end,
 })
@@ -155,7 +158,7 @@ minetest.register_chatcommand("laser", {
 minetest.register_chatcommand("nukerestore", {
     params = "<playername>",
     description = "Restore the inventory of a player after they've been lasored", -- Full description
-    privs = {ban=true},
+    privs = {nuke=true},
     func = function(name, param)
         target = minetest.get_player_by_name(param)
 
@@ -163,6 +166,7 @@ minetest.register_chatcommand("nukerestore", {
             return false, "Player does not exist"
         else
             player:get_inventory():set_lists(inventory_save[player:get_player_name()]) -- Seems legit
+                
         end
     end,
 })
@@ -180,8 +184,44 @@ local replace_chars = {
     "%]",
     "-",
     "_",
+    "œ",
+    "∑",
+    "´",
+    "®",
+    "†",
+    "¥",
+    "¨",
+    "ˆ",
+    "ø",
+    "π"
+    "Œ",
+    "„",
+    "‰",
+    "ˇ",
+    "Ø",
+    "∏",
+    "˝",
+    "",
+    "Æ",
+    "ß",
+    "˙",
+    "˙",
+    "∆",
+    "¬",
+    "æ",
+    "§",
+    "¶",
+    "•",
+    "ª",
+    "º",
+    "√",
+    "µ",
+    "˜",
+    "ç",
+    "≈",
+    "Ω",
+    
 }
-
 function chatfilter.contains_bad_words(message)
     -- Remove special characters
     for _, char in pairs(replace_chars) do

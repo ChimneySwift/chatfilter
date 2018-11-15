@@ -193,7 +193,7 @@ local replace_chars = {
     "¨",
     "ˆ",
     "ø",
-    "π"
+    "π",
     "Œ",
     "„",
     "‰",
@@ -220,8 +220,8 @@ local replace_chars = {
     "ç",
     "≈",
     "Ω",
-    
 }
+
 function chatfilter.contains_bad_words(message)
     -- Remove special characters
     for _, char in pairs(replace_chars) do
